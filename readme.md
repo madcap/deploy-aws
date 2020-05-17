@@ -27,6 +27,8 @@ The following prerequisites are outside of the scope of this example but are req
 * can run the gradle build
 * installed terraform cli
 * ability to make .sh files executable
+* installed AWS eksctl cli
+* installed kubectl
 
 #### S3 Bucket
 
@@ -73,8 +75,10 @@ From the proejct root:
 $ cd deploy/elastic-beanstalk
 $ ./destroy.sh
 
-(wait aproximately 3 min for deployment to complete) 
+(wait aproximately 3 min for destruction to complete) 
 $
 ```
 
 ### Host in Elastic Kubernetes Service
+
+Pending
