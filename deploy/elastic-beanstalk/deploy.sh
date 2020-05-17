@@ -4,14 +4,12 @@ NEWLINE=$'\n'
 VERSION=$1
 BUCKET=$2
 
+export AWS_PAGER="cat"
+
 if [[ -z ${VERSION} ]] || [[ -z ${BUCKET} ]]; then
     echo "Usage: ./deploy.sh VERSION BUCKET"
     exit 1
 fi
-
-# TODO - need to figure out how to set environment variables
-
-# TODO - some aws commands produce paginated output when the output is too long
 
 echo "$NEWLINE### deploying version $VERSION using bucket $BUCKET$NEWLINE"
 sleep 1
@@ -34,7 +32,24 @@ aws elasticbeanstalk create-application-version --application-name="deploy-aws-e
 
 echo "$NEWLINE### placing application into environment$NEWLINE"
 sleep 1
-aws elasticbeanstalk update-environment --application-name="deploy-aws-elastic-beanstalk" --environment-name="deploy-aws-elastic-beanstalk-environment" --version-label="${VERSION}"
+cat > options.json <<- EOM
+[
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "version",
+    "Value": "${VERSION}"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "environment",
+    "Value": "elastic-beanstalk"
+  }
+]
+EOM
+aws elasticbeanstalk update-environment --application-name="deploy-aws-elastic-beanstalk" \
+  --environment-name="deploy-aws-elastic-beanstalk-environment" --version-label="${VERSION}" \
+  --option-settings file://options.json
+rm options.json
 
 echo "$NEWLINE### deleting jar file from bucket$NEWLINE"
 sleep 1
@@ -42,11 +57,19 @@ aws s3 rm s3://${BUCKET}/deploy-aws-0.0.1-SNAPSHOT.jar
 
 echo "$NEWLINE### fetching url of deployed application"
 sleep 1
-url=$(aws elasticbeanstalk describe-environments --environment-names="deploy-aws-elastic-beanstalk-environment" --query="Environments[0].EndpointURL")
+fqdn=$(aws elasticbeanstalk describe-environments --environment-names="deploy-aws-elastic-beanstalk-environment" \
+  --query="Environments[0].EndpointURL")
+url="http://${fqdn//\"}/"
 
-echo "$NEWLINE### deployment completed, waiting for application to become available (may take some time)"
-# TODO - actually test if the app is available
-sleep 10
-
-echo "$NEWLINE### application available at: ${url//\"}"
-sleep 1
+echo "$NEWLINE### deployment completed, attempting to validate (may take some time)"
+for i in 1 2 3 4 5 7 8 9 10
+do
+  sleep 6
+  result=$(curl -s $url)
+  if [[ $result == *"\"version\":\"$VERSION\""* ]]; then
+    echo "$NEWLINE### application available at: $url"
+    exit 0
+  fi
+done
+echo "$NEWLINE### application not responding at: $url"
+exit 1

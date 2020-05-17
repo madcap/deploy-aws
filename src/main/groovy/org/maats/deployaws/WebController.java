@@ -14,8 +14,8 @@ import java.util.Map;
 @RequestMapping("/")
 public class WebController {
 
-    @Value("${environment.value}")
-    private String environmentValue;
+    @Value("${environment}")
+    private String environment;
 
     @Value("${version}")
     private String version;
@@ -26,7 +26,7 @@ public class WebController {
     ) {
         return Map.of(
                 "version", version,
-                "environmentValue", environmentValue
+                "environment", environment
         );
     }
 
@@ -39,7 +39,7 @@ public class WebController {
                 "headers", headers,
                 "body", body,
                 "version", version,
-                "environmentValue", environmentValue
+                "environment", environment
         );
     }
 
@@ -50,7 +50,7 @@ public class WebController {
         return Map.of(
                 "queryParameters", queryParameters,
                 "version", version,
-                "environmentValue", environmentValue
+                "environment", environment
         );
     }
 

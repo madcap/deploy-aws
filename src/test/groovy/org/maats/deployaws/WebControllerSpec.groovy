@@ -4,16 +4,16 @@ import spock.lang.Specification
 
 class WebControllerSpec extends Specification {
 
-    private static final String VALUE = 'value'
+    private static final String ENVIRONMENT = 'environment'
     private static final String VERSION = 'version'
 
-    private WebController controller = new WebController(environmentValue: VALUE, version: VERSION)
+    private WebController controller = new WebController(environment: ENVIRONMENT, version: VERSION)
 
     def 'test - home'() {
         expect:
         controller.home() == [
                 version: VERSION,
-                environmentValue: VALUE,
+                environment: ENVIRONMENT,
         ]
     }
 
@@ -27,7 +27,7 @@ class WebControllerSpec extends Specification {
                 body: body,
                 headers: headers,
                 version: VERSION,
-                environmentValue: VALUE,
+                environment: ENVIRONMENT,
         ]
     }
 
@@ -39,7 +39,7 @@ class WebControllerSpec extends Specification {
         controller.echoGet(queryParameters) == [
                 queryParameters: queryParameters,
                 version: VERSION,
-                environmentValue: VALUE,
+                environment: ENVIRONMENT,
         ]
     }
 

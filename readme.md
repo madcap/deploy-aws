@@ -3,6 +3,17 @@
 
 This project provides a simple java web application and examples of several mechanisms for automating deployment to AWS.
 
+### About the Java App
+
+The java application in this project is a simple Spring Boot application with 3 endpoints:
+* GET /
+* POST /echo
+* GET /echo
+
+One of the goals of the java app is to demonstrate that environment variables are set correctly as part of the deployment process so each response includes environment variables: 
+* environment
+* version
+
 ### Setup
 
 #### Prerequisites
@@ -37,5 +48,33 @@ On the AWS Console navigate to IAM and create a new user `Terraform-example`.
 
 ### Host in Elastic Beanstalk
 
-TODO
+#### Deploy
 
+Deploy the java app to AWS Elastic Beanstalk. 
+* VERSION is a user specified version of the application. 
+* BUCKET is your S3 bucket name.
+
+From the proejct root:
+```
+$ cd deploy/elastic-beanstalk
+$ ./deploy.sh VERSION BUCKET
+
+(wait aproximately 3 min for deployment to complete) 
+
+### application available at: awseb-e-2-AWSEBLoa-8X3APKDJETSI-713510636.us-east-1.elb.amazonaws.com
+$
+```
+
+Validate that the application was deployed by visiting the public url found at the output
+
+#### Destroy
+From the proejct root:
+```
+$ cd deploy/elastic-beanstalk
+$ ./destroy.sh
+
+(wait aproximately 3 min for deployment to complete) 
+$
+```
+
+### Host in Elastic Kubernetes Service
