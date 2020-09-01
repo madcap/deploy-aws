@@ -25,18 +25,19 @@ The following prerequisites are outside of the scope of this example but are req
 * installed the AWS cli
 * have a working java/groovy environment
 * can run the gradle build
+* installed docker
 * installed terraform cli
 * ability to make .sh files executable
 * installed AWS eksctl cli
 * installed kubectl
 
-#### S3 Bucket
+#### S3 Bucket (Elastic Beanstalk Only)
 
 You'll need to be able to upload your jar file to an S3 bucket. Since bucket names are globally unique it will just be referred to as BUCKET.
 
 Create an S3 bucket that you'll use. Copy the name of the bucket for later, use it anywhere you see BUCKET.
 
-#### IAM User/Group
+#### IAM User/Group for running Terraform
 
 On the AWS Console navigate to IAM and create a new group `Terraform-example` with the following policy types:
 * `AWSElasticBeanstalkFullAccess`
@@ -56,9 +57,18 @@ Deploy the java app to AWS Elastic Beanstalk.
 * VERSION is a user specified version of the application. 
 * BUCKET is your S3 bucket name.
 
-From the proejct root:
+From the project root navigate to the deployment directory:
 ```
 $ cd deploy/elastic-beanstalk
+```
+
+Initialize terraform (first time only):
+```
+$ terraform init
+```
+
+Run the deploy script:
+```
 $ ./deploy.sh VERSION BUCKET
 
 (wait aproximately 3 min for deployment to complete) 
@@ -70,7 +80,7 @@ $
 Validate that the application was deployed by visiting the public url found at the output
 
 #### Destroy
-From the proejct root:
+From the project root:
 ```
 $ cd deploy/elastic-beanstalk
 $ ./destroy.sh

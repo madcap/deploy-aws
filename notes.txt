@@ -1,0 +1,12 @@
+
+
+dockerize the app:
+* create Dockerfile
+* build docker image: `docker build -t deploy-aws .`
+* view docker images: `docker images`
+* run docker container: `docker run -d -p {desired local port}:5000 deploy-aws`
+* view running containers: `docker ps`
+* stop running container: `docker stop {desired container name}`
+
+
+
