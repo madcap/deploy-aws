@@ -1,5 +1,7 @@
 FROM openjdk:12-alpine
 
+RUN apk --no-cache add curl
+
 EXPOSE 5000
 WORKDIR /app
 

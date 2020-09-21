@@ -6,7 +6,8 @@ dockerize the app:
 * view docker images: `docker images`
 * run docker container: `docker run -d -p {desired local port}:5000 deploy-aws`
 * view running containers: `docker ps`
-* stop running container: `docker stop {desired container name}`
+* access shell in running container: `docker run -it deploy-aws /bin/ash`
+* stop running container: `docker stop {container id/name}`
 
 
 
